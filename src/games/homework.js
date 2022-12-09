@@ -123,6 +123,13 @@ function frame(sprites, t, dt, up, down, left, right, space) {
         alien.x = Math.random() * 450;
     }
 
+    if (distance (girl, alien) <= 50) {
+        girl = false;
+    }
+
+    if (distance (bullet, alien) <= 50){
+        alive = false;
+    }
 }
 
 export default {
