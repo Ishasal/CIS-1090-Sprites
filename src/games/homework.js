@@ -4,8 +4,12 @@ let score;  //The players score
 let alive;  //is the 
 let timeuntilfireball = 4; //time each fireball is fired
 
+let dxbullet;
+let dybullet;
+
 //You might have some constants that you use
 const speed = 300;  //In pixels per second
+const gravity = 450;
 
 //This is a helper function to compute the distance
 //between two sprites
@@ -33,11 +37,11 @@ function setup(sprites) {
     sprites[1].image = "👽";
     sprites[1].x = 300;
     sprites[1].y = 100;
-    sprites[2].image = "☄️";
-    sprites[2].x = 300;
-    sprites[2].y = 120;
+    //sprites[2].image = "☄️";
+    // sprites[2].x = 300;
+    // sprites[2].y = 120;
     //The bullet the girl shoots
-    sprites[3].image = "֯֯֯‣";
+    sprites[3].image = "֯֯֯✪";
     sprites[3].x = 100;
     sprites[3].y = 100;
 }
@@ -78,7 +82,7 @@ function frame(sprites, t, dt, up, down, left, right, space) {
     }
     if (right) {
         girl.x += speed * dt;
-        //You can flipH a spright so it is facing
+        //You can flipH a sprite so it is facing
         //the other direction
         girl.flipH = true;
     }
@@ -86,11 +90,6 @@ function frame(sprites, t, dt, up, down, left, right, space) {
         girl.x -= speed * dt;
         girl.flipH = false;
     }
-    let dx = girl.x - fireball.x;
-    fireball.x = fireball.x + dx / 50;
-
-    let dy = girl.y - fireball.y;
-    fireball.y = fireball.y + dy / 50;
 
     timeuntilfireball = timeuntilfireball - dt;
     if (timeuntilfireball <= 0) {
@@ -99,11 +98,30 @@ function frame(sprites, t, dt, up, down, left, right, space) {
         console.log("shoot")
         timeuntilfireball = 4;
     }
-    let dxbullet = alien.x - bullet.x;
-    bullet.x = bullet.x + dxbullet / 60;
 
-    let dybullet = alien.y - bullet.y;
+
+    if (space) {
+        if (bullet.flipH)
+            bullet.x = girl.x - 40;
+        else
+            bullet.x = girl.x + 20;
+        bullet.y = girl.y + 10;
+
+        dxbullet = alien.x - bullet.x;
+        dybullet = alien.y - bullet.y;
+    }
+    bullet.x = bullet.x + dxbullet / 60;
     bullet.y = bullet.y + dybullet / 60;
+
+    let alienspeed = 150;
+    alienspeed = alienspeed + gravity * dt;
+    alien.y = alien.y - dt * alienspeed;
+
+    if (alien.y <= 0) {
+        alien.y = 450;
+        alienspeed = 150;
+        alien.x = Math.random() * 450;
+    }
 
 }
 
@@ -113,7 +131,7 @@ export default {
     icon: "👽", //Choose an emoji icon
     background: {
         //You can put CSS here to change your background
-        "background-color": "navy"
+        "background-color": "blue"
     },
     frame,
     setup,
