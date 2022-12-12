@@ -3,13 +3,14 @@
 let score;  //The players score
 let alive;  //is the 
 let timeuntilfireball = 4; //time each fireball is fired
-
+let alienspeed = 150;
 let dxbullet;
 let dybullet;
 
+
 //You might have some constants that you use
 const speed = 300;  //In pixels per second
-const gravity = 450;
+const gravity = 200;
 
 //This is a helper function to compute the distance
 //between two sprites
@@ -37,9 +38,9 @@ function setup(sprites) {
     sprites[1].image = "👽";
     sprites[1].x = 300;
     sprites[1].y = 100;
-    //sprites[2].image = "☄️";
-    // sprites[2].x = 300;
-    // sprites[2].y = 120;
+    //sprites[2].image = "💀";
+   // sprites[2].x = 300;
+   // sprites[2].y = 120;
     //The bullet the girl shoots
     sprites[3].image = "֯֯֯✪";
     sprites[3].x = 100;
@@ -65,6 +66,18 @@ function frame(sprites, t, dt, up, down, left, right, space) {
     const alien = sprites[1]; //Easier to remember
     const fireball = sprites[2]; //Easier to remember
     const bullet = sprites[3];  //Easier to remember
+
+
+    if (alive) {
+        if (space) {
+            score = 0;
+            alive = false;
+            sprites[0].y = 150;
+            sprites[0].image = "💃🏻";s
+        }
+        return score; 
+
+    }
 
     //Move the fire engine
     if (up) {
@@ -113,24 +126,31 @@ function frame(sprites, t, dt, up, down, left, right, space) {
     bullet.x = bullet.x + dxbullet / 60;
     bullet.y = bullet.y + dybullet / 60;
 
-    let alienspeed = 150;
     alienspeed = alienspeed + gravity * dt;
     alien.y = alien.y - dt * alienspeed;
 
     if (alien.y <= 0) {
         alien.y = 450;
-        alienspeed = 150;
+        alienspeed = 100;
         alien.x = Math.random() * 450;
     }
 
-    if (distance (girl, alien) <= 50) {
-        girl = false;
+    if (distance(bullet, alien) < 50) {
+        score++;
+        alien.y = 450;
+        alienspeed = 100;
+        alien.x = Math.random() * 450;
+
     }
 
-    if (distance (bullet, alien) <= 50){
-        alive = false;
+    if (distance(girl, alien) <= 50) {
+        alive = true;
+        sprites[0].image = "💀";
     }
+    return score;
+
 }
+
 
 export default {
     name: "Kill the Alien",
@@ -138,7 +158,7 @@ export default {
     icon: "👽", //Choose an emoji icon
     background: {
         //You can put CSS here to change your background
-        "background-color": "blue"
+        "background-color": "deep blue"
     },
     frame,
     setup,
